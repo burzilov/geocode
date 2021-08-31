@@ -6,20 +6,17 @@ export const OPTIONS = 'OPTIONS';
 
 @Global()
 @Module({
-  exports: [GeocodeService],
-  providers: [GeocodeService],
+  // exports: [GeocodeService],
+  // providers: [GeocodeService],
 })
 export class GeocodeModule {
   public static register(options: GeocodeOptions): DynamicModule {
     return {
       module: GeocodeModule,
-      exports: [GeocodeService],
+      // exports: [GeocodeService],
       providers: [
-        GeocodeService,
-        {
-          provide: OPTIONS,
-          useValue: options,
-        },
+        { provide: GeocodeService, useClass: GeocodeService },
+        { provide: OPTIONS, useValue: options },
       ],
     };
   }
