@@ -49,6 +49,8 @@ export class GeocodeService {
       '&postalcode=' +
       encodeURIComponent(query);
 
+    console.log(url);
+
     return this.http.get(url).pipe(
       map((resp: any) => {
         const data: Address[] = resp.data?.postalcodes
