@@ -4,10 +4,14 @@
   "description": "Geocode module",
   "author": "Ivan Burzilov <ivan@burzilov.ru>",
   "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npm version patch && nest build && cp package.json ./dist/package.json",
+    "build": "npm version patch && nest build",
+    "build.bk": "npm version patch && nest build && cp package.json ./dist/package.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
