@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { OPTIONS } from './app.module';
-import { GeocodeOptions } from './options.interface';
+import { GeocodeOptions, OPTIONS } from './app.interfaces';
 
 interface IGeocodeService {
   test(): Promise<any>;
