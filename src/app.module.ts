@@ -6,7 +6,7 @@ export const OPTIONS = 'OPTIONS';
 
 @Global()
 @Module({
-  exports: [GeocodeService, OPTIONS],
+  exports: [GeocodeService],
   providers: [GeocodeService],
 })
 export class GeocodeModule {
