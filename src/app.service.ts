@@ -83,13 +83,6 @@ export class GeocodeService {
       return of([]);
     }
 
-    // if (!this.options.google_api_key) {
-    //   throw new HttpException(
-    //     { status: HttpStatus.FORBIDDEN, error: 'Empty google_api_key' },
-    //     HttpStatus.FORBIDDEN,
-    //   );
-    // }
-
     const url =
       'https://maps.googleapis.com/maps/api/place/autocomplete/json?language=en&key=' +
       this.options.google_api_key +
@@ -98,7 +91,15 @@ export class GeocodeService {
 
     return this.http.get(url).pipe(
       map((resp: any) => {
-        console.log(resp);
+        if (resp.data.error_message) {
+          throw new HttpException(
+            {
+              status: HttpStatus.INTERNAL_SERVER_ERROR,
+              error: resp.data.error_message,
+            },
+            HttpStatus.FORBIDDEN,
+          );
+        }
         return resp.data.predictions
           .map((x: any) => {
             return {
