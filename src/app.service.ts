@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import { map, Observable, of } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { Address, GeocodeOptions, OPTIONS } from './app.interfaces';
 
 @Injectable()
@@ -72,6 +72,81 @@ export class GeocodeService {
             return _a > _b ? 1 : -1;
           });
         return data;
+      }),
+    );
+  }
+
+  cityByZipGoogleCom(query: string): Observable<Address[]> {
+    // поиск стран и городов по почтовому индексу с помощью Google Maps
+
+    if (!query) {
+      return of([]);
+    }
+
+    const url =
+      'https://maps.googleapis.com/maps/api/place/autocomplete/json?language=en&key=' +
+      this.options.google_api_key +
+      '&input=' +
+      encodeURIComponent(query);
+
+    return this.http.get(url).pipe(
+      map((resp: any) => {
+        return resp.data.predictions
+          .map((x: any) => {
+            return {
+              place_id: x.place_id,
+              types: x.types,
+              url:
+                'https://maps.googleapis.com/maps/api/place/details/json?language=en&key=' +
+                this.options.google_api_key +
+                '&place_id=' +
+                x.place_id,
+            };
+          })
+          .filter((x: any) => (x.types as any[]).includes('postal_code'))
+          .map((x: any) => {
+            return this.http.get(x.url);
+          });
+      }),
+
+      switchMap((x) => forkJoin(x)),
+
+      map((resp: any[]) => {
+        return resp.map((x: any) => {
+          const components = x.data.result.address_components;
+          const address = {} as Address;
+          components.forEach((x: any) => {
+            const t = x.types as string[];
+            if (t.includes('postal_code')) {
+              address.zip = x.long_name;
+            }
+            if (t.includes('country')) {
+              address.country_iso = x.short_name;
+              address.country = x.long_name;
+            }
+            if (t.includes('locality')) {
+              address.city = x.long_name;
+            }
+            if (t.includes('administrative_area_level_3') && !address.city) {
+              address.city = x.long_name;
+            }
+            if (t.includes('administrative_area_level_2') && !address.city) {
+              address.city = x.long_name;
+            }
+            if (t.includes('administrative_area_level_1') && !address.city) {
+              address.city = x.long_name;
+            }
+          });
+          if (address.city === '') {
+            address.city = address.country;
+          }
+          address.suggestion = [
+            address.country,
+            address.zip,
+            address.city,
+          ].join(', ');
+          return address;
+        });
       }),
     );
   }
