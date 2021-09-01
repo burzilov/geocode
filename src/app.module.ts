@@ -5,10 +5,7 @@ import { GeocodeOptions } from './options.interface';
 export const OPTIONS = 'OPTIONS';
 
 @Global()
-@Module({
-  // exports: [GeocodeService],
-  // providers: [GeocodeService],
-})
+@Module({})
 export class GeocodeModule {
   public static register(options: GeocodeOptions): DynamicModule {
     return {
