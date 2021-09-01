@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { Address, GeocodeOptions, OPTIONS } from './app.interfaces';
 
 @Injectable()
@@ -97,11 +97,8 @@ export class GeocodeService {
       encodeURIComponent(query);
 
     return this.http.get(url).pipe(
-      catchError((resp: any) => {
-        console.log(resp);
-        return of(null);
-      }),
       map((resp: any) => {
+        console.log(resp);
         return resp.data.predictions
           .map((x: any) => {
             return {
