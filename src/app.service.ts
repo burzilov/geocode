@@ -45,11 +45,9 @@ export class GeocodeService {
 
     const url =
       'http://api.geonames.org/postalCodeLookupJSON?username=' +
-      process.env.GeonamesOrgUsername +
+      this.options.geonames_username +
       '&postalcode=' +
       encodeURIComponent(query);
-
-    console.log(url);
 
     return this.http.get(url).pipe(
       map((resp: any) => {
