@@ -10,8 +10,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npm version patch && nest build",
-    "build.bk": "npm version patch && nest build && cp package.json ./dist/package.json",
+    "build": "nest build",
+    "build.local": "npm version patch && nest build && cp package.json ./dist/package.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
