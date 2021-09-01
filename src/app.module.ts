@@ -10,8 +10,7 @@ export class GeocodeModule {
   public static register(options: GeocodeOptions): DynamicModule {
     return {
       module: GeocodeModule,
-      imports: [GeocodeService],
-      exports: [GeocodeService],
+      // exports: [GeocodeService],
       providers: [GeocodeService, { provide: OPTIONS, useValue: options }],
     };
   }

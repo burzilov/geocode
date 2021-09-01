@@ -4,9 +4,9 @@ import { GeocodeOptions } from './options.interface';
 
 @Injectable()
 export class GeocodeService {
-  constructor(@Inject(OPTIONS) private _options: GeocodeOptions) {}
+  constructor(@Inject(OPTIONS) private options: GeocodeOptions) {}
 
   async test(): Promise<any> {
-    return `Options: ${JSON.stringify(this._options)}`;
+    return `Options: ${JSON.stringify(this.options)}`;
   }
 }
