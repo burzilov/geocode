@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { Address, GeocodeOptions, OPTIONS } from './app.interfaces';
 
 @Injectable()
@@ -83,15 +83,12 @@ export class GeocodeService {
       return of([]);
     }
 
-    if (!this.options.google_api_key) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: 'Wrong google_api_key',
-        },
-        HttpStatus.FORBIDDEN,
-      );
-    }
+    // if (!this.options.google_api_key) {
+    //   throw new HttpException(
+    //     { status: HttpStatus.FORBIDDEN, error: 'Empty google_api_key' },
+    //     HttpStatus.FORBIDDEN,
+    //   );
+    // }
 
     const url =
       'https://maps.googleapis.com/maps/api/place/autocomplete/json?language=en&key=' +
@@ -100,6 +97,10 @@ export class GeocodeService {
       encodeURIComponent(query);
 
     return this.http.get(url).pipe(
+      catchError((resp: any) => {
+        console.log(resp);
+        return resp;
+      }),
       map((resp: any) => {
         return resp.data.predictions
           .map((x: any) => {
