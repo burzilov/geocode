@@ -18,6 +18,8 @@ export class GeocodeService {
       )
       .pipe(
         map((resp: any) => {
+          console.log(resp.data?.geonames);
+
           const countryName = {};
           (resp.data?.geonames as any[]).forEach((x) => {
             countryName[x.countryCode] = x.countryName;
