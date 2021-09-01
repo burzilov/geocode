@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { Address, GeocodeOptions, OPTIONS } from './app.interfaces';
 
@@ -81,6 +81,16 @@ export class GeocodeService {
 
     if (!query) {
       return of([]);
+    }
+
+    if (!this.options.google_api_key) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Wrong google_api_key',
+        },
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     const url =
