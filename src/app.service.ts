@@ -5,10 +5,33 @@ import { GeocodeOptions, OPTIONS } from './app.interfaces';
 
 @Injectable()
 export class GeocodeService {
+  // Сервис для работы с адресами
+
+  private countryName: any = {};
+
   constructor(
     @Inject(OPTIONS) private options: GeocodeOptions,
     private http: HttpService,
-  ) {}
+  ) {
+    this.init();
+  }
+
+  private init(): void {
+    this.http
+      .get(
+        'http://api.geonames.org/countryInfoJSON?username=' +
+          process.env.GeonamesOrgUsername,
+      )
+      .pipe(
+        map((resp: any) => {
+          (resp.data?.geonames as any[]).forEach((x) => {
+            this.countryName[x.countryCode] = x.countryName;
+          });
+          console.log(this.countryName);
+        }),
+      )
+      .subscribe();
+  }
 
   test(): Observable<any> {
     return this.http
