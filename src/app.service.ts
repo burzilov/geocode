@@ -99,7 +99,7 @@ export class GeocodeService {
     return this.http.get(url).pipe(
       catchError((resp: any) => {
         console.log(resp);
-        return resp;
+        return of(null);
       }),
       map((resp: any) => {
         return resp.data.predictions
