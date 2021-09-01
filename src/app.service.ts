@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { map, Observable, of } from 'rxjs';
 import { Address, GeocodeOptions, OPTIONS } from './app.interfaces';
 
@@ -49,11 +49,8 @@ export class GeocodeService {
       '&postalcode=' +
       encodeURIComponent(query);
 
-    Logger.debug(url);
-
     return this.http.get(url).pipe(
       map((resp: any) => {
-        Logger.debug(resp);
         const data: Address[] = resp.data?.postalcodes
           ?.map((x: any) => {
             const address: Address = {
