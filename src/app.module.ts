@@ -2,11 +2,11 @@ import { DynamicModule, Global, Module } from '@nestjs/common';
 import { GeocodeService } from './app.service';
 import { GeocodeOptions } from './options.interface';
 
-// export const OPTIONS = 'OPTIONS';
+export const OPTIONS = 'OPTIONS';
 
 @Global()
 @Module({
-  exports: [GeocodeService],
+  exports: [GeocodeService, OPTIONS],
   providers: [GeocodeService],
 })
 export class GeocodeModule {
@@ -14,7 +14,7 @@ export class GeocodeModule {
     return {
       module: GeocodeModule,
       exports: [GeocodeService],
-      providers: [GeocodeService, { provide: 'OPTIONS', useValue: options }],
+      providers: [GeocodeService, { provide: OPTIONS, useValue: options }],
     };
   }
 }
