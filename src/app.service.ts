@@ -12,13 +12,15 @@ export class GeocodeService {
   constructor(
     @Inject(OPTIONS) private options: GeocodeOptions,
     private http: HttpService,
-  ) {}
+  ) {
+    this.init();
+  }
 
   init(): void {
     this.http
       .get(
         'http://api.geonames.org/countryInfoJSON?username=' +
-          process.env.GeonamesOrgUsername,
+          this.options.geonames_username,
       )
       .pipe(
         map((resp: any) => {

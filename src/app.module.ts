@@ -10,10 +10,6 @@ import { GeocodeService } from './app.service';
   providers: [GeocodeService],
 })
 export class GeocodeModule {
-  constructor(private service: GeocodeService) {
-    this.service.init();
-  }
-
   public static register(options: GeocodeOptions): DynamicModule {
     return {
       module: GeocodeModule,
