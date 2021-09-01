@@ -1,15 +1,30 @@
+import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
+import { map, Observable } from 'rxjs';
 import { GeocodeOptions, OPTIONS } from './app.interfaces';
 
-interface IGeocodeService {
-  test(): Promise<any>;
-}
-
 @Injectable()
-export class GeocodeService implements IGeocodeService {
-  constructor(@Inject(OPTIONS) private options: GeocodeOptions) {}
+export class GeocodeService {
+  constructor(
+    @Inject(OPTIONS) private options: GeocodeOptions,
+    private http: HttpService,
+  ) {}
 
-  async test(): Promise<any> {
-    return `Options: ${JSON.stringify(this.options)}`;
+  test(): Observable<any> {
+    return this.http
+      .get(
+        'http://api.geonames.org/countryInfoJSON?username=' +
+          this.options.geonames_username,
+      )
+      .pipe(
+        map((resp: any) => {
+          const countryName = {};
+          (resp.data?.geonames as any[]).forEach((x) => {
+            countryName[x.countryCode] = x.countryName;
+          });
+          return countryName;
+        }),
+      );
+    // return `Options: ${JSON.stringify(this.options)}`;
   }
 }

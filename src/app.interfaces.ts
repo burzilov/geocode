@@ -5,13 +5,12 @@ export interface GeocodeOptions {
   geonames_username: string;
 }
 
-// export interface GeocodeOptionsFactory {
-//   createGeocodeOptions(): Promise<GeocodeOptions> | GeocodeOptions;
-// }
-
-// export interface GeocodeAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
-//   inject?: any[];
-//   useClass?: Type<GeocodeOptionsFactory>;
-//   useExisting?: Type<GeocodeOptionsFactory>;
-//   useFactory?: (...args: any[]) => Promise<GeocodeOptions> | GeocodeOptions;
-// }
+export interface Address {
+  suggestion: string;
+  country_iso: string;
+  country: string;
+  zip: string;
+  city: string;
+  street?: string;
+  house?: string;
+}
