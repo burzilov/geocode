@@ -1,6 +1,6 @@
 {
   "name": "@burzilov/geocode",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Geocode module",
   "author": "Ivan Burzilov <ivan@burzilov.ru>",
   "main": "dist/index.js",
