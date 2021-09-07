@@ -36,8 +36,21 @@ export class GeocodeService {
     return of(this.countryName);
   }
 
-  cityByZipGeonamesOrg(query: string): Observable<Address[]> {
-    // поиск стран и городов по почтовому индексу с помощью Geonames.Org
+  zipGeonamesOrg(query: string): Observable<Address[]> {
+    // поиск страны и города по почтовому индексу с помощью Geonames.Org
+    return this.geonamesOrg('postalcode', query);
+  }
+
+  cityGeonamesOrg(query: string): Observable<Address[]> {
+    // поиск страны и почтового индекса по городу с помощью Geonames.Org
+    return this.geonamesOrg('placename', query);
+  }
+
+  private geonamesOrg(
+    searchType: string,
+    query: string,
+  ): Observable<Address[]> {
+    // поиск с помощью Geonames.Org
 
     if (!query) {
       throw new HttpException(
@@ -49,7 +62,9 @@ export class GeocodeService {
     const url =
       'http://api.geonames.org/postalCodeLookupJSON?username=' +
       this.options.geonames_username +
-      '&postalcode=' +
+      '&' +
+      searchType +
+      '=' +
       encodeURIComponent(query);
 
     return this.http.get(url).pipe(
@@ -79,7 +94,7 @@ export class GeocodeService {
     );
   }
 
-  cityByZipGoogleCom(query: string): Observable<Address[]> {
+  zipGoogleCom(query: string): Observable<Address[]> {
     // поиск стран и городов по почтовому индексу с помощью Google Maps
 
     if (!query) {
