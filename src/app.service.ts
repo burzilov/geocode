@@ -36,19 +36,20 @@ export class GeocodeService {
     return of(this.countryName);
   }
 
-  zipGeonamesOrg(query: string): Observable<Address[]> {
+  zipGeonamesOrg(query: string, limit = 50): Observable<Address[]> {
     // поиск страны и города по почтовому индексу с помощью Geonames.Org
-    return this.geonamesOrg('postalcode', query);
+    return this.geonamesOrg('postalcode', query, limit);
   }
 
-  cityGeonamesOrg(query: string): Observable<Address[]> {
+  cityGeonamesOrg(query: string, limit = 50): Observable<Address[]> {
     // поиск страны и почтового индекса по городу с помощью Geonames.Org
-    return this.geonamesOrg('placename', query);
+    return this.geonamesOrg('placename', query, limit);
   }
 
   private geonamesOrg(
     searchType: string,
     query: string,
+    limit: number,
   ): Observable<Address[]> {
     // поиск с помощью Geonames.Org
 
@@ -62,6 +63,8 @@ export class GeocodeService {
     const url =
       'http://api.geonames.org/postalCodeLookupJSON?username=' +
       this.options.geonames_username +
+      '&maxRows=' +
+      limit +
       '&' +
       searchType +
       '=' +
