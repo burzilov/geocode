@@ -88,8 +88,8 @@ export class GeocodeService {
             return address;
           })
           .sort((a: any, b: any) => {
-            const _a = a.country + a.city;
-            const _b = b.country + b.city;
+            const _a = a.country + a.city + a.zip;
+            const _b = b.country + b.city + b.zip;
             return _a > _b ? 1 : -1;
           });
         return data;
@@ -197,8 +197,10 @@ export class GeocodeService {
     }
 
     const url =
-      'https://maps.googleapis.com/maps/api/place/autocomplete/json?language=en&key=' +
+      'https://maps.googleapis.com/maps/api/place/autocomplete/json?key=' +
       this.options.google_api_key +
+      '&language=en' +
+      '&types=address' +
       '&input=' +
       encodeURIComponent(`${zip}, ${city}, ${query}`) +
       '&components=country:' +
