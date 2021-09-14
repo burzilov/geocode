@@ -179,42 +179,6 @@ export class GeocodeService {
     );
   }
 
-  private parseGoogleAddressComponents(components: any[]): Address {
-    const address = {} as Address;
-    components.forEach((x: any) => {
-      const t = x.types as string[];
-      if (t.includes('postal_code')) {
-        address.zip = x.long_name;
-      }
-      if (t.includes('country')) {
-        address.country_iso = x.short_name;
-        address.country = x.long_name;
-      }
-      if (t.includes('locality')) {
-        address.city = x.long_name;
-      }
-      if (t.includes('administrative_area_level_3') && !address.city) {
-        address.city = x.long_name;
-      }
-      if (t.includes('administrative_area_level_2') && !address.city) {
-        address.city = x.long_name;
-      }
-      if (t.includes('administrative_area_level_1') && !address.city) {
-        address.city = x.long_name;
-      }
-      if (t.includes('route')) {
-        address.street = x.long_name;
-      }
-      if (t.includes('street_number')) {
-        address.house = x.long_name;
-      }
-    });
-    if (address.city === '') {
-      address.city = address.country;
-    }
-    return address;
-  }
-
   addressGoogleCom(
     query: string,
     country_iso: string,
@@ -231,15 +195,12 @@ export class GeocodeService {
     }
 
     const queryParts = [];
-
     if (zip) {
       queryParts.push(zip);
     }
-
     if (city) {
       queryParts.push(city);
     }
-
     queryParts.push(query);
 
     const url =
@@ -286,11 +247,10 @@ export class GeocodeService {
 
       map((resp: any[]) => {
         return resp.map((r: any) => {
-          const address = this.parseGoogleAddressComponents(
+          return this.parseGoogleAddressComponents(
             r.data.result.address_components,
+            r.data.result.formatted_address,
           );
-          address.suggestion = r.data.result.formatted_address;
-          return address;
         });
       }),
     );
@@ -320,13 +280,54 @@ export class GeocodeService {
           return of(null);
         }
         return resp.data?.results.map((r: any) => {
-          const address = this.parseGoogleAddressComponents(
+          return this.parseGoogleAddressComponents(
             r.address_components,
+            r.formatted_address,
           );
-          address.suggestion = r.formatted_address;
-          return address;
         });
       }),
     );
+  }
+
+  private parseGoogleAddressComponents(
+    components: any[],
+    suggestion?: string,
+  ): Address {
+    const address = {} as Address;
+    if (suggestion) {
+      address.suggestion = suggestion;
+    }
+    components.forEach((x: any) => {
+      const t = x.types as string[];
+      if (t.includes('postal_code')) {
+        address.zip = x.long_name;
+      }
+      if (t.includes('country')) {
+        address.country_iso = x.short_name;
+        address.country = x.long_name;
+      }
+      if (t.includes('locality')) {
+        address.city = x.long_name;
+      }
+      if (t.includes('administrative_area_level_3') && !address.city) {
+        address.city = x.long_name;
+      }
+      if (t.includes('administrative_area_level_2') && !address.city) {
+        address.city = x.long_name;
+      }
+      if (t.includes('administrative_area_level_1') && !address.city) {
+        address.city = x.long_name;
+      }
+      if (t.includes('route')) {
+        address.street = x.long_name;
+      }
+      if (t.includes('street_number')) {
+        address.house = x.long_name;
+      }
+    });
+    if (address.city === '') {
+      address.city = address.country;
+    }
+    return address;
   }
 }
