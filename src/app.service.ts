@@ -256,7 +256,7 @@ export class GeocodeService {
     );
   }
 
-  normalizeGoogleCom(address: string): Observable<Address> {
+  normalizeGoogleCom(address: string): Observable<Address[]> {
     // нормализация адреса с помощью Google Maps
     if (!address) {
       return of(null);
